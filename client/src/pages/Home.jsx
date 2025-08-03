@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
-import FeedForm from '../components/FeedForm'
-import Feed from '../components/Feed'
-import { useDispatch } from 'react-redux'
+import React, { useEffect } from 'react';
+import FeedForm from '../components/FeedForm';
+import Feed from '../components/Feed';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllFeeds } from '../redux/slice/feedSlice';
-import { useSelector } from "react-redux";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -14,21 +13,26 @@ export default function Home() {
   }, [dispatch]);
 
   return (
-    <div className='flex flex-col items-center w-full min-h-screen bg-gray-100'>
-      <FeedForm />
-
-     <div>
-        {
-          posts.length > 0 ? (
+    <div className="flex flex-col items-center w-full min-h-screen bg-gray-50">
+      <div className="w-full max-w-2xl px-4">
+        <FeedForm />
+        <div className="space-y-4">
+          {posts.length > 0 ? (
             posts.map((post) => (
-              <Feed key={post._id} name={post.user.name} content={post.content} dateStamp={post.createdAt} />
+              <Feed
+                key={post._id}
+                name={post.user.name}
+                content={post.content}
+                dateStamp={post.createdAt}
+              />
             ))
           ) : (
-            <div className="text-gray-500 text-center mt-4">
-              No posts available. Create a post to see it here.
+            <div className="text-gray-500 text-center mt-6 bg-white py-6 px-4 rounded-lg shadow-sm">
+              No posts available. Share your thoughts to get started!
             </div>
           )}
-     </div>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { SignIn } from '../redux/slice/authSlice';
 
-export default function Login() {
+export default function LoginPage() {
   // State for form inputs
   const [formData, setFormData] = useState({
     email: '',
@@ -13,6 +15,8 @@ export default function Login() {
     email: '',
     password: '',
   });
+
+  const dispatch = useDispatch()
 
   // Handle input changes
   const handleChange = (e) => {
@@ -51,19 +55,12 @@ export default function Login() {
       return;
     }
 
-    // If validation passes, proceed with login
-    console.log('Login attempt:', formData);
-    // Here you would typically make an API call to authenticate
-    // Example: 
-    // try {
-    //   const response = await fetch('/api/login', {
-    //     method: 'POST',
-    //     body: JSON.stringify(formData),
-    //     headers: { 'Content-Type': 'application/json' }
-    //   });
-    // } catch (error) {
-    //   // Handle error
-    // }
+    try {
+      dispatch(SignIn(formData));
+      setFormData({ email: '', password: '' }); 
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (

@@ -36,7 +36,7 @@ export const SignIn = createAsyncThunk('auth/login', async (userData, { rejectWi
 
 export const SignOut = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/logout`, {
+        const response = await axios.post(`${API_BASE_URL}/auth/logout`,{}, {
             headers: {
                 'Content-Type': 'application/json',
             },

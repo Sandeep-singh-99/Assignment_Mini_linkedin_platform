@@ -99,7 +99,7 @@ const feedSlice = createSlice({
     })
     .addCase(getAllFeeds.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.posts = action.payload.data;
         state.error = null;
     })
     .addCase(getAllFeeds.rejected, (state, action) => {
@@ -112,7 +112,7 @@ const feedSlice = createSlice({
     })
     .addCase(getUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.posts = action.payload.data;
         state.error = null;
     })
     .addCase(getUserProfile.rejected, (state, action) => {

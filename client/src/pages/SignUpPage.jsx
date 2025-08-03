@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { SignUp } from '../redux/slice/authSlice';
 
-export default function SignUp() {
+export default function SignUpPage() {
   // State for form inputs
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +20,8 @@ export default function SignUp() {
     bio: '',
   });
 
+  const dispatch = useDispatch();
+
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +37,7 @@ export default function SignUp() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
@@ -67,19 +71,17 @@ export default function SignUp() {
       return;
     }
 
-    // If validation passes, proceed with signup
-    console.log('SignUp attempt:', formData);
-    // Here you would typically make an API call to register the user
-    // Example:
-    // try {
-    //   const response = await fetch('/api/signup', {
-    //     method: 'POST',
-    //     body: JSON.stringify(formData),
-    //     headers: { 'Content-Type': 'application/json' }
-    //   });
-    // } catch (error) {
-    //   // Handle error
-    // }
+   try {
+    dispatch(SignUp(formData));
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      bio: '',
+    })
+   } catch (error) {
+    console.error('Error during sign up:', error);
+   }
   };
 
   return (

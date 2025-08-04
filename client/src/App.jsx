@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import { useDispatch } from 'react-redux'
 import { checkAuth } from './redux/slice/authSlice'
 import ProfileView from './pages/ProfileView'
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -18,6 +19,18 @@ export default function App() {
 
   return (
     <BrowserRouter>
+    <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     <NavBar />
     <Routes>
       <Route path='/' element={<Home />}/>

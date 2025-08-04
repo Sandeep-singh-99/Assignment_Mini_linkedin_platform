@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { SignIn } from '../redux/slice/authSlice';
+import { toast } from 'react-toastify';
 
 export default function LoginPage() {
   // State for form inputs
@@ -16,7 +17,9 @@ export default function LoginPage() {
     password: '',
   });
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -33,9 +36,9 @@ export default function LoginPage() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     let newErrors = {};
     if (!formData.email) {
@@ -43,7 +46,7 @@ export default function LoginPage() {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
@@ -56,21 +59,33 @@ export default function LoginPage() {
     }
 
     try {
-      dispatch(SignIn(formData));
-      setFormData({ email: '', password: '' }); 
+      const result = await dispatch(SignIn(formData));
+      if (result.error) {
+        throw new Error(result.payload.message || 'Login failed');
+      }
+      setFormData({ email: '', password: '' });
+      toast.success(result.payload.message || 'Login successful');
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
+      toast.error(error.message || 'Login failed');
+      setErrors({ email: 'Login failed', password: '' });
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-50 px-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 hover:shadow-2xl">
+        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+          Welcome Back
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -79,16 +94,22 @@ export default function LoginPage() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-             className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400"
               placeholder="Enter your email"
+              aria-describedby="email-error"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              <p id="email-error" className="mt-2 text-sm text-red-500">
+                {errors.email}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -97,26 +118,32 @@ export default function LoginPage() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-             className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400"
               placeholder="Enter your password"
+              aria-describedby="password-error"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              <p id="password-error" className="mt-2 text-sm text-red-500">
+                {errors.password}
+              </p>
             )}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium"
           >
-            Sign in
+            Sign In
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign up
+          <Link
+            to="/signup"
+            className="font-medium text-blue-600 hover:text-blue-700 transition duration-200"
+          >
+            Sign Up
           </Link>
         </p>
       </div>

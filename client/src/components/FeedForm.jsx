@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createFeed } from '../redux/slice/feedSlice';
+import { toast } from 'react-toastify';
 
 export default function FeedForm() {
   const [content, setContent] = useState('');
@@ -12,10 +13,15 @@ export default function FeedForm() {
     if (!content.trim()) return; 
     setIsSubmitting(true);
     try {
-      await dispatch(createFeed({ content })).unwrap();
+      const result = await dispatch(createFeed({ content })).unwrap();
+      if (result.error) {
+        throw new Error(result.payload.message || 'Failed to create post');
+      }
       setContent('');
+      toast.success('Post created successfully!');
     } catch (error) {
       console.error('Failed to create post:', error);
+      toast.error(error.message || 'Failed to create post');
     } finally {
       setIsSubmitting(false);
     }

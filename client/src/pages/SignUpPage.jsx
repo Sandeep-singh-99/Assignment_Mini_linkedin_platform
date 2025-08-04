@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { SignUp } from '../redux/slice/authSlice';
+import { toast } from 'react-toastify';
 
 export default function SignUpPage() {
   // State for form inputs
@@ -21,6 +22,7 @@ export default function SignUpPage() {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -71,27 +73,39 @@ export default function SignUpPage() {
       return;
     }
 
-   try {
-    dispatch(SignUp(formData));
-    setFormData({
-      name: '',
-      email: '',
-      password: '',
-      bio: '',
-    })
-   } catch (error) {
-    console.error('Error during sign up:', error);
-   }
+    try {
+      const result = await dispatch(SignUp(formData));
+      if (result.error) {
+        throw new Error(result.payload.message || 'Sign up failed');
+      }
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        bio: '',
+      });
+      toast.success(result.payload.message || 'Sign up successful');
+      navigate('/');
+    } catch (error) {
+      console.error('Error during sign up:', error);
+      toast.error(error.message || 'Sign up failed');
+      setErrors({ name: 'Sign up failed', email: '', password: '', bio: '' });
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-3xl font-bold text-center mb-6">Sign Up</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-50 px-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 hover:shadow-2xl">
+        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+          Create Your Account
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Name
             </label>
             <input
@@ -100,16 +114,22 @@ export default function SignUpPage() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400"
               placeholder="Enter your name"
+              aria-describedby="name-error"
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+              <p id="name-error" className="mt-2 text-sm text-red-500">
+                {errors.name}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -118,16 +138,22 @@ export default function SignUpPage() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400"
               placeholder="Enter your email"
+              aria-describedby="email-error"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              <p id="email-error" className="mt-2 text-sm text-red-500">
+                {errors.email}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="bio"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Bio
             </label>
             <textarea
@@ -136,19 +162,30 @@ export default function SignUpPage() {
               value={formData.bio}
               onChange={handleChange}
               rows="4"
-              className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400 resize-none"
               placeholder="Tell us about yourself"
+              aria-describedby="bio-error bio-counter"
             />
-            <p className="mt-1 text-sm text-gray-500">
+            <p
+              id="bio-counter"
+              className={`mt-2 text-sm ${
+                formData.bio.length > 200 ? 'text-red-500' : 'text-gray-500'
+              }`}
+            >
               {formData.bio.length}/200 characters
             </p>
             {errors.bio && (
-              <p className="mt-1 text-sm text-red-500">{errors.bio}</p>
+              <p id="bio-error" className="mt-2 text-sm text-red-500">
+                {errors.bio}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -157,26 +194,32 @@ export default function SignUpPage() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className='w-full outline-none'
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 placeholder-gray-400"
               placeholder="Enter your password"
+              aria-describedby="password-error"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+              <p id="password-error" className="mt-2 text-sm text-red-500">
+                {errors.password}
+              </p>
             )}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium"
           >
             Sign Up
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Log in
+          <Link
+            to="/login"
+            className="font-medium text-blue-600 hover:text-blue-700 transition duration-200"
+          >
+            Log In
           </Link>
         </p>
       </div>

@@ -1,14 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000/api/v1";
 
 export const createFeed = createAsyncThunk(
   "feed/createFeed",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/feed/create-feed`,
+        `${import.meta.env.VITE_API_URL}/feed/create-feed`,
         userData,
         {
           headers: {
@@ -28,7 +27,7 @@ export const getAllFeeds = createAsyncThunk(
   "feed/getAllFeeds",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/feed/get-all-feeds`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/feed/get-all-feeds`, {
         withCredentials: true,
       });
       return response.data;
@@ -42,7 +41,7 @@ export const getUserProfile = createAsyncThunk(
   "feed/getUserProfile",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/feed/user-profile`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/feed/user-profile`, {
         withCredentials: true,
       });
       return response.data;
@@ -57,7 +56,7 @@ export const getUserProfileById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/feed/user-profile/${id}`,
+        `${import.meta.env.VITE_API_URL}/feed/user-profile/${id}`,
         {
           withCredentials: true,
         }

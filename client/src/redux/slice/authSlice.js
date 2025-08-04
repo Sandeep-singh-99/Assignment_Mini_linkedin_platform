@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api/v1';
+
 
 export const SignUp = createAsyncThunk(`auth/register`, async (userData, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/register`, userData, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, userData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -20,7 +20,7 @@ export const SignUp = createAsyncThunk(`auth/register`, async (userData, { rejec
 
 export const SignIn = createAsyncThunk('auth/login', async (userData, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/login`, userData, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, userData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -36,7 +36,7 @@ export const SignIn = createAsyncThunk('auth/login', async (userData, { rejectWi
 
 export const SignOut = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/logout`,{}, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`,{}, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -51,7 +51,7 @@ export const SignOut = createAsyncThunk('auth/logout', async (_, { rejectWithVal
 
 export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/auth/check-auth`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/auth/check-auth`, {
             headers: {
                 'Content-Type': 'application/json',
             },

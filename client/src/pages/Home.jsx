@@ -24,6 +24,7 @@ export default function Home() {
                 name={post.user.name}
                 content={post.content}
                 dateStamp={post.createdAt}
+                userId={post.user._id}
               />
             ))
           ) : (

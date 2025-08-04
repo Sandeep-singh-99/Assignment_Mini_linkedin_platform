@@ -7,6 +7,7 @@ import Profile from './pages/Profile'
 import LoginPage from './pages/LoginPage'
 import { useDispatch } from 'react-redux'
 import { checkAuth } from './redux/slice/authSlice'
+import ProfileView from './pages/ProfileView'
 
 export default function App() {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function App() {
       <Route path='/login' element={<LoginPage />}/>
       <Route path='/signup' element={<SignUpPage />}/>
       <Route path='/profile' element={<Profile />}/>
+      <Route path='/profile/:id' element={<ProfileView />}/>
       <Route path='*' element={<div>404 Not Found</div>} />
     </Routes>
     </BrowserRouter>

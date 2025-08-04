@@ -73,6 +73,7 @@ const initialState = {
   posts: [],
   loading: false,
   error: null,
+  profile: [],
 };
 
 const feedSlice = createSlice({
@@ -112,7 +113,7 @@ const feedSlice = createSlice({
     })
     .addCase(getUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.data;
+        state.profile = action.payload.data;
         state.error = null;
     })
     .addCase(getUserProfile.rejected, (state, action) => {
@@ -125,7 +126,7 @@ const feedSlice = createSlice({
     })
     .addCase(getUserProfileById.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.profile = action.payload.data;
         state.error = null;
     })
     .addCase(getUserProfileById.rejected, (state, action) => {

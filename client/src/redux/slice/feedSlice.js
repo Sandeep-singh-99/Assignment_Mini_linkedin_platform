@@ -87,7 +87,7 @@ const feedSlice = createSlice({
     })
     .addCase(createFeed.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.posts = [action.payload.data, ...state.posts];
         state.error = null;
     })
     .addCase(createFeed.rejected, (state, action) => {
